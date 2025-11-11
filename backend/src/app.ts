@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import chatRouter from "./routes/chat.routes";
+import errorHandler from "./middlewares/errorHandler";
 
 const app = express();
 
@@ -16,7 +17,6 @@ app.use((_req, res) => {
   res.status(404).json({ error: "Endpoint not found." });
 });
 
-// Global error handler
-// app.use(errorHandler);
+app.use(errorHandler);
 
 export default app;

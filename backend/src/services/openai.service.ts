@@ -40,8 +40,22 @@ export async function getAIResponse(
     });
 
     return completion.data.choices[0]?.message?.content || "(No response)";
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error calling OpenAI:", error);
-    throw new Error("AI service error");
+
+    if (error.response) {
+      const status = error.response.status;
+      const message = error.response.data?.error?.message || "Unknown error from OpenAI API";
+
+      if (status === 401) {
+        throw new Error(`OpenAI API authentication failed with ${status}.`);
+      } else if (status >= 500) {
+        throw new Error("OpenAI service is currently unavailable.");
+      } else {
+        throw new Error(`OpenAI API error: ${message}`);
+      }
+    }
+
+    throw new Error("Failed to generate AI response. Please try again.");
   }
 }
