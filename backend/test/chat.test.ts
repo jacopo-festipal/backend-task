@@ -15,13 +15,19 @@ describe('POST /api/chat', () => {
 
     const response = await request(app)
       .post('/api/chat')
-      .send({ userMessage: 'Hello', language: 'en', cefrLevel: 'B1' })
+      .send({ userMessage: 'Hello', language: 'en', cefrLevel: 'B1', model: 'gpt-3.5-turbo' })
       .expect('Content-Type', /json/)
       .expect(200);
 
     expect(response.body).toHaveProperty('response');
     expect(response.body.response).toBe(mockResponse);
-    expect(openaiService.getAIResponse).toHaveBeenCalled();
+    expect(openaiService.getAIResponse).toHaveBeenCalledWith(
+      expect.objectContaining({
+        language: 'en',
+        cefrLevel: 'B1',
+        model: 'gpt-3.5-turbo',
+      })
+    );
   });
 
   it('should handle a missing message', async () => {

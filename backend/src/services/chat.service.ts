@@ -21,13 +21,13 @@ export async function processUserMessage(
 
   const recentMessages = ChatDb.messages.slice(-4);
 
-  const aiReply = await getAIResponse(
-    recentMessages,
+  const aiReply = await getAIResponse({
+    messages: recentMessages,
     language,
     cefrLevel,
-    ChatDb.conversationTopic,
-    model
-  );
+    conversationTopic: ChatDb.conversationTopic,
+    model,
+  });
 
   ChatDb.messages.push({
     role: "assistant",

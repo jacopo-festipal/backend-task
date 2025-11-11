@@ -40,29 +40,47 @@ const SUPPORTED_MODELS = [
 
 type SupportedModel = (typeof SUPPORTED_MODELS)[number];
 
-export async function getAIResponse(
-  messages: Message[],
-  language: string = "en",
-  cefrLevel: string = "B1",
-  conversationTopic: string | null = null,
-  model: string = "gpt-3.5-turbo"
-): Promise<string> {
+type AIConfig = {
+  messages: Message[];
+  systemPrompt?: string;
+  model?: string;
+  maxTokens?: number;
+  language?: string;
+  cefrLevel?: string;
+  conversationTopic?: string | null;
+};
+
+export async function getAIResponse(config: AIConfig): Promise<string> {
+  const {
+    messages,
+    systemPrompt: customSystemPrompt,
+    model = "gpt-3.5-turbo",
+    maxTokens,
+    language = "en",
+    cefrLevel = "B1",
+    conversationTopic = null,
+  } = config;
   try {
-    const languageName = languageNames[language] || language;
-    const cefrGuidance = cefrDescriptions[cefrLevel] || cefrDescriptions["B1"];
-    const isFirstMessage = messages.length === 1;
+    let systemPrompt: string;
 
-    let systemPrompt = "";
-    if (language === "en") {
-      systemPrompt = `You are a language learning assistant. Adapt your responses to CEFR level ${cefrLevel}. ${cefrGuidance}`;
+    if (customSystemPrompt) {
+      systemPrompt = customSystemPrompt;
     } else {
-      systemPrompt = `You are a language learning assistant. Respond in ${languageName}. Adapt the language complexity to CEFR level ${cefrLevel}. ${cefrGuidance}`;
-    }
+      const languageName = languageNames[language] || language;
+      const cefrGuidance = cefrDescriptions[cefrLevel] || cefrDescriptions["B1"];
+      const isFirstMessage = messages.length === 1;
 
-    if (isFirstMessage) {
-      systemPrompt += ` A user's first message indicates their preferred topic of interest. Ask them what specifically they'd like to discuss about this topic.`;
-    } else if (conversationTopic) {
-      systemPrompt += ` Keep the conversation focused on the topic: "${conversationTopic}" abd guide the discussion back if it strays.`;
+      if (language === "en") {
+        systemPrompt = `You are a language learning assistant. Adapt your responses to CEFR level ${cefrLevel}. ${cefrGuidance}`;
+      } else {
+        systemPrompt = `You are a language learning assistant. Respond in ${languageName}. Adapt the language complexity to CEFR level ${cefrLevel}. ${cefrGuidance}`;
+      }
+
+      if (isFirstMessage) {
+        systemPrompt += ` A user's first message indicates their preferred topic of interest. Ask them what specifically they'd like to discuss about this topic.`;
+      } else if (conversationTopic) {
+        systemPrompt += ` Keep the conversation focused on the topic: "${conversationTopic}" abd guide the discussion back if it strays.`;
+      }
     }
 
     const chatMessages = [
@@ -77,10 +95,16 @@ export async function getAIResponse(
       ? (model as SupportedModel)
       : "gpt-3.5-turbo";
 
-    const completion = await openai.createChatCompletion({
+    const completionConfig: any = {
       model: selectedModel,
       messages: chatMessages,
-    });
+    };
+
+    if (maxTokens) {
+      completionConfig.max_tokens = maxTokens;
+    }
+
+    const completion = await openai.createChatCompletion(completionConfig);
 
     return completion.data.choices[0]?.message?.content || "(No response)";
   } catch (error: any) {
