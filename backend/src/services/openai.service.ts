@@ -25,30 +25,48 @@ const cefrDescriptions: Record<string, string> = {
   C2: "Use full language range at native speaking level.",
 };
 
+type Message = {
+  role: "user" | "assistant" | "system";
+  text: string;
+  language: string;
+};
+
 /** Creates a prompt and fetches a response from OpenAI. */
 export async function getAIResponse(
-  userMessage: string,
+  messages: Message[],
   language: string = "en",
-  cefrLevel: string = "B1"
+  cefrLevel: string = "B1",
+  conversationTopic: string | null = null
 ): Promise<string> {
   try {
     const languageName = languageNames[language] || language;
     const cefrGuidance = cefrDescriptions[cefrLevel] || cefrDescriptions["B1"];
+    const isFirstMessage = messages.length === 1;
 
-    const systemPrompt =
-      language === "en"
-        ? `You are a helpful language learning assistant. AContinue the conversation with the user wth level ${cefrLevel}. ${cefrGuidance}`
-        : `You are a language learning assistant. Respond in ${languageName}. Adapt the complexity to the level ${cefrLevel}. ${cefrGuidance}`;
+    let systemPrompt = "";
+    if (language === "en") {
+      systemPrompt = `You are a language learning assistant. Adapt your responses to CEFR level ${cefrLevel}. ${cefrGuidance}`;
+    } else {
+      systemPrompt = `You are a language learning assistant. Respond in ${languageName}. Adapt the language complexity to CEFR level ${cefrLevel}. ${cefrGuidance}`;
+    }
+
+    if (isFirstMessage) {
+      systemPrompt += ` A user's first message indicates their preferred topic of interest. Ask them what specifically they'd like to discuss about this topic.`;
+    } else if (conversationTopic) {
+      systemPrompt += ` Keep the conversation focused on the topic: "${conversationTopic}" abd guide the discussion back if it strays.`;
+    }
+
+    const chatMessages = [
+      { role: "system" as const, content: systemPrompt },
+      ...messages.map((msg) => ({
+        role: msg.role as "user" | "assistant",
+        content: msg.text,
+      })),
+    ];
 
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: systemPrompt,
-        },
-        { role: "user", content: userMessage },
-      ],
+      messages: chatMessages,
     });
 
     return completion.data.choices[0]?.message?.content || "(No response)";

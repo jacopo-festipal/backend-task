@@ -1,7 +1,10 @@
 interface Message {
-  role: "user" | "assistant";
+  role: "user" | "assistant" | "system";
   text: string;
   language: string;
 }
 
-export const ChatDb = { messages: [] as Message[] };
+export const ChatDb = {
+  messages: [] as Message[],
+  conversationTopic: null as string | null,
+};

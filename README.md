@@ -58,8 +58,8 @@ Don't forget to give us access to the repository by either making it public or i
 
 ## Prompting
 
-- [ ] In the current setup, each reply from the llm only takes one user message into account. Increase the context by also including the previous 2 messages (i.e. one reply and another user message).
-- [ ] Ask users in a first message about what they want to talk about and then make sure that the rest of the conversation sticks to this topic.
+- [X] In the current setup, each reply from the llm only takes one user message into account. Increase the context by also including the previous 2 messages (i.e. one reply and another user message).
+- [X] Ask users in a first message about what they want to talk about and then make sure that the rest of the conversation sticks to this topic.
 - [ ] After a user sent 5 messages, the next message from the AI should include feedback of how they have been doing so far (in English).
 - [ ] Make the conversation more interesting. (this is intended to be very open, be creative)
 
