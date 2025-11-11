@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { sendUserMessage } from "../controllers/chat.controllers";
+import { validateChatRequest } from "../middlewares/validation";
 
 const router = Router();
 
-// POST /api/chat
-router.post("/", sendUserMessage);
+router.post("/", validateChatRequest, sendUserMessage);
 
 export default router;

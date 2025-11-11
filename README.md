@@ -44,9 +44,9 @@ Don't forget to give us access to the repository by either making it public or i
 
 ## API endpoints
 
-- [ ] Add input / argument validation to the controllers
+- [X] Add input / argument validation to the controllers
 - [ ] Implement the error handling middleware and use it to properly inform the frontend about issues.
-- [ ] Some files (e.g. `chat.controller.ts`) contain code that belongs into a service or middleware. Refactor to make the code more modular and clean
+- [X] Some files (e.g. `chat.controller.ts`) contain code that belongs into a service or middleware. Refactor to make the code more modular and clean
 - [ ] Make the data in the mock db persist over multiple starts of the backend
 
 ## LLM service

@@ -28,9 +28,30 @@ describe('POST /api/chat', () => {
     const response = await request(app)
       .post('/api/chat')
       .send({})
-      .expect('Content-Type', /json/);
+      .expect('Content-Type', /json/)
+      .expect(400);
 
-    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('error');
+  });
+
+  it('should return error 400 for an invalid language', async () => {
+    const response = await request(app)
+      .post('/api/chat')
+      .send({ userMessage: 'Hello', language: 'test' })
+      .expect('Content-Type', /json/)
+      .expect(400);
+
+    expect(response.body).toHaveProperty('error');
+  });
+
+  it('should return error 400 for empty userMessage', async () => {
+    const response = await request(app)
+      .post('/api/chat')
+      .send({ userMessage: '  ' })
+      .expect('Content-Type', /json/)
+      .expect(400);
+
+    expect(response.body).toHaveProperty('error');
   });
 
   it('should return 404 for unknown endpoints', async () => {
