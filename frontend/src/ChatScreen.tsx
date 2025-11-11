@@ -1,6 +1,6 @@
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -39,6 +39,15 @@ const ChatScreen: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   const handleSendMessage = async () => {
     if (!messageInput.trim()) return;
 
@@ -68,9 +77,10 @@ const ChatScreen: React.FC = () => {
       ]);
 
       setMessageInput('');
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error(err);
-      setError('Error sending message. Check server logs or try again.');
+      const errorMessage = err.response?.data?.error || 'Failed to send message. Please try again.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -158,7 +168,11 @@ const ChatScreen: React.FC = () => {
       </View>
 
       {/* Error Display */}
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+      {error && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -229,8 +243,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 4,
   },
-  error: {
-    color: 'red',
+  errorContainer: {
+    position: 'absolute',
+    bottom: 80,
+    left: 16,
+    right: 16,
+    backgroundColor: '#BF3B30',
+    padding: 12,
+    borderRadius: 8,
+    elevation: 5,
+  },
+  errorText: {
+    color: '#fff',
     textAlign: 'center',
+    fontSize: 14,
+    fontWeight: '500',
   },
 });
