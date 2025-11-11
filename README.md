@@ -53,7 +53,7 @@ Don't forget to give us access to the repository by either making it public or i
 
 - [ ] Add support for other LLM models and make this configurable over a parameter. (Feel free to completely rewrite this / use other OpenAIApi SDK functions)
 - [ ] Generalize the `getAIResponse` function: Change it such that it accepts a configuration that consists of at least a prompt and a model, potentially also additional parameters used for the llm generation.
-- [ ] When communication with openAI fails, the server currently crashes. Handle this more gracefully.
+- [X] When communication with openAI fails, the server currently crashes. Handle this more gracefully.
 - [ ] Add a retry mechanism to the communication with the openAI API. I.e. if the model is not able to generate an answer, try again for up to 3 times.
 
 ## Prompting
