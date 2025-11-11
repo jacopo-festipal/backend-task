@@ -31,12 +31,21 @@ type Message = {
   language: string;
 };
 
-/** Creates a prompt and fetches a response from OpenAI. */
+const SUPPORTED_MODELS = [
+  "gpt-3.5-turbo",
+  "gpt-4",
+  "gpt-4o",
+  "gpt-4o-mini",
+] as const;
+
+type SupportedModel = (typeof SUPPORTED_MODELS)[number];
+
 export async function getAIResponse(
   messages: Message[],
   language: string = "en",
   cefrLevel: string = "B1",
-  conversationTopic: string | null = null
+  conversationTopic: string | null = null,
+  model: string = "gpt-3.5-turbo"
 ): Promise<string> {
   try {
     const languageName = languageNames[language] || language;
@@ -64,8 +73,12 @@ export async function getAIResponse(
       })),
     ];
 
+    const selectedModel = SUPPORTED_MODELS.includes(model as SupportedModel)
+      ? (model as SupportedModel)
+      : "gpt-3.5-turbo";
+
     const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
+      model: selectedModel,
       messages: chatMessages,
     });
 

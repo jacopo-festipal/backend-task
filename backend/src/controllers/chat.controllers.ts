@@ -7,9 +7,9 @@ export async function sendUserMessage(
   next: NextFunction
 ): Promise<void> {
   try {
-    const { userMessage, language = "en", cefrLevel = "B1" } = req.body;
-    const aiReply = await processUserMessage(userMessage, language, cefrLevel);
+    const { userMessage, language = "en", cefrLevel = "B1", model } = req.body;
 
+    const aiReply = await processUserMessage(userMessage, language, cefrLevel, model);
     res.status(200).json({ response: aiReply });
   } catch (error) {
     next(error);

@@ -1,4 +1,3 @@
-import { Picker } from '@react-native-picker/picker';
 import axios, { AxiosError } from 'axios';
 import React, { useState, useEffect } from 'react';
 import {
@@ -9,6 +8,8 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
+
+import { SelectPicker } from './components/SelectPicker';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -31,10 +32,18 @@ const cefrLevels: { code: string; name: string }[] = [
   { code: 'C2', name: 'C2 - Proficient' },
 ];
 
+const models: { code: string; name: string }[] = [
+  { code: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo' },
+  { code: 'gpt-4o-mini', name: 'GPT-4o Mini' },
+  { code: 'gpt-4o', name: 'GPT-4o' },
+  { code: 'gpt-4', name: 'GPT-4' },
+];
+
 const ChatScreen: React.FC = () => {
   const [messageInput, setMessageInput] = useState<string>('');
   const [language, setLanguage] = useState<string>('en');
   const [cefrLevel, setCefrLevel] = useState<string>('B1');
+  const [model, setModel] = useState<string>('gpt-3.5-turbo');
   const [conversation, setConversation] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -64,6 +73,7 @@ const ChatScreen: React.FC = () => {
           userMessage: messageInput,
           language: language,
           cefrLevel: cefrLevel,
+          model: model,
         },
         {
           headers: { 'Content-Type': 'application/json' },
@@ -95,41 +105,26 @@ const ChatScreen: React.FC = () => {
 
       {/* Language and level selection */}
       <View style={styles.selectionContainer}>
-        <View>
-          <Text style={styles.label}>Language:</Text>
-          <Picker
-            selectedValue={language}
-            onValueChange={(value) => setLanguage(value)}
-            style={styles.picker}
-            dropdownIconColor="#333"
-          >
-            {languages.map((lang) => (
-              <Picker.Item
-                key={lang.code}
-                label={lang.name}
-                value={lang.code}
-              />
-            ))}
-          </Picker>
-        </View>
+        <SelectPicker
+          label="Language"
+          selectedValue={language}
+          items={languages}
+          onValueChange={setLanguage}
+        />
 
-        <View>
-          <Text style={styles.label}>Level:</Text>
-          <Picker
-            selectedValue={cefrLevel}
-            onValueChange={(value) => setCefrLevel(value)}
-            style={styles.picker}
-            dropdownIconColor="#333"
-          >
-            {cefrLevels.map((level) => (
-              <Picker.Item
-                key={level.code}
-                label={level.name}
-                value={level.code}
-              />
-            ))}
-          </Picker>
-        </View>
+        <SelectPicker
+          label="Level"
+          selectedValue={cefrLevel}
+          items={cefrLevels}
+          onValueChange={setCefrLevel}
+        />
+
+        <SelectPicker
+          label="Model"
+          selectedValue={model}
+          items={models}
+          onValueChange={setModel}
+        />
       </View>
 
       {/* Chat History */}
@@ -199,16 +194,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     gap: 16,
   },
-  label: {
-    fontSize: 12,
-    marginBottom: 8,
-    color: '#666',
-  },
-  picker: {
-    borderColor: '#ccc',
-    borderWidth: 1,
-    width: 180,
-  },
   chatList: {
     flex: 1,
     marginBottom: 12,
@@ -243,8 +228,9 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderWidth: 1,
     marginRight: 8,
-    paddingHorizontal: 8,
-    borderRadius: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 16,
   },
   errorContainer: {
     position: 'absolute',

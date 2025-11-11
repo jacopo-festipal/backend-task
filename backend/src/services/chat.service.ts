@@ -4,7 +4,8 @@ import { getAIResponse } from "./openai.service";
 export async function processUserMessage(
   userMessage: string,
   language: string = "en",
-  cefrLevel: string = "B1"
+  cefrLevel: string = "B1",
+  model: string = "gpt-3.5-turbo"
 ): Promise<string> {
   const isFirstMessage = ChatDb.messages.length === 0;
 
@@ -24,7 +25,8 @@ export async function processUserMessage(
     recentMessages,
     language,
     cefrLevel,
-    ChatDb.conversationTopic
+    ChatDb.conversationTopic,
+    model
   );
 
   ChatDb.messages.push({
