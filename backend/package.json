@@ -1,0 +1,31 @@
+{
+  "name": "your-takehome-backend",
+  "version": "1.0.0",
+  "description": "A minimal Node.js + Express backend in TypeScript for the AI chat take-home assignment.",
+  "main": "dist/index.js",
+  "scripts": {
+    "lint": "eslint . --ext .ts",
+    "clean": "rm -rf dist",
+    "build": "tsc --noCheck",
+    "build:strict": "eslint . && tsc",
+    "start": "npm run build && node ./dist/index.js",
+    "dev": "ts-node-dev --respawn --transpileOnly src/index.ts",
+    "test": "jest --coverage"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "openai": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.17",
+    "@types/jest": "^29.5.2",
+    "@types/node": "^20.4.2",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.1.6"
+  }
+}
