@@ -32,7 +32,7 @@ const ChatScreen: React.FC = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:3001/api/chat',
+        'http://localhost:3000/api/chat',
         {
           userMessage: messageInput,
         },

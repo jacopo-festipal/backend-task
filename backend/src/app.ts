@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import chatRouter from "./routes/chat.routes";
-import errorHandler from "./middlewares/errorHandler";
 
 const app = express();
 
@@ -13,7 +12,7 @@ app.use(express.json());
 app.use("/api/chat", chatRouter);
 
 // Fallback route (for unknown endpoints)
-app.use((req, res) => {
+app.use((_req, res) => {
   res.status(404).json({ error: "Endpoint not found." });
 });
 

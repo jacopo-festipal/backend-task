@@ -5,7 +5,7 @@ import { getAIResponse } from "../services/openai.service";
 export async function sendUserMessage(
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) {
   // Save user message in the mock DB
   ChatDb.messages.push({

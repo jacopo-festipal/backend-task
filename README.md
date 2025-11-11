@@ -33,8 +33,8 @@ Don't forget to give us access to the repository by either making it public or i
 
 ## General
 
-- [ ] The frontend cannot reach the backend, fix this
-- [ ] The backend cannot communicate with the OpenAI API, fix this
+- [X] The frontend cannot reach the backend, fix this
+- [X] The backend cannot communicate with the OpenAI API, fix this
 
 ## Full-stack
 
@@ -65,7 +65,7 @@ Don't forget to give us access to the repository by either making it public or i
 
 ## Code Quality & Testing
 
-- [ ] Write tests for the API endpoints
+- [X] Write tests for the API endpoints
 - [ ] There should be no visible type errors
 - [ ] The linter should not show errors
 - [ ] The linter should not show warnings
