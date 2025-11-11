@@ -16,17 +16,29 @@ const languageNames: Record<string, string> = {
   de: "German",
 };
 
+const cefrDescriptions: Record<string, string> = {
+  A1: "Use very simple words with short sentences.",
+  A2: "Use simple vocabulary and common phrases.",
+  B1: "Use everyday language with good grammar.",
+  B2: "Use a vast vocabulary with complex structures.",
+  C1: "Use a sophisticated language level with high precision.",
+  C2: "Use full language range at native speaking level.",
+};
+
 /** Creates a prompt and fetches a response from OpenAI. */
 export async function getAIResponse(
   userMessage: string,
-  language: string = "en"
+  language: string = "en",
+  cefrLevel: string = "B1"
 ): Promise<string> {
   try {
     const languageName = languageNames[language] || language;
+    const cefrGuidance = cefrDescriptions[cefrLevel] || cefrDescriptions["B1"];
+
     const systemPrompt =
       language === "en"
-        ? `You are a helpful assistant. Continue the conversation with the user.`
-        : `You are a language assistant. Respond in ${languageName}.`;
+        ? `You are a helpful language learning assistant. AContinue the conversation with the user wth level ${cefrLevel}. ${cefrGuidance}`
+        : `You are a language learning assistant. Respond in ${languageName}. Adapt the complexity to the level ${cefrLevel}. ${cefrGuidance}`;
 
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",

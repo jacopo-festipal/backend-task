@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
 const SUPPORTED_LANGUAGES = new Set(["en", "it", "fr", "de"]);
+const SUPPORTED_CEFR_LEVELS = new Set(["A1", "A2", "B1", "B2", "C1", "C2"]);
 
 export function validateChatRequest(
   req: Request,
@@ -26,6 +27,14 @@ export function validateChatRequest(
   if (language && !SUPPORTED_LANGUAGES.has(language)) {
     res.status(400).json({
       error: `Invalid language '${language}'.`,
+    });
+    return;
+  }
+
+  const { cefrLevel } = req.body;
+  if (cefrLevel && !SUPPORTED_CEFR_LEVELS.has(cefrLevel)) {
+    res.status(400).json({
+      error: `Invalid CEFR level '${cefrLevel}'.`,
     });
     return;
   }

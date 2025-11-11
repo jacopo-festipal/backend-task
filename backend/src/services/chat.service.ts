@@ -3,7 +3,8 @@ import { getAIResponse } from "./openai.service";
 
 export async function processUserMessage(
   userMessage: string,
-  language: string = "en"
+  language: string = "en",
+  cefrLevel: string = "B1"
 ): Promise<string> {
   ChatDb.messages.push({
     role: "user",
@@ -11,7 +12,7 @@ export async function processUserMessage(
     language: language,
   });
 
-  const aiReply = await getAIResponse(userMessage, language);
+  const aiReply = await getAIResponse(userMessage, language, cefrLevel);
 
   ChatDb.messages.push({
     role: "assistant",
