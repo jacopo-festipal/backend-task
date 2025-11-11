@@ -1,5 +1,5 @@
 import { Picker } from '@react-native-picker/picker';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -77,9 +77,12 @@ const ChatScreen: React.FC = () => {
       ]);
 
       setMessageInput('');
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      const errorMessage = err.response?.data?.error || 'Failed to send message. Please try again.';
+      const errorMessage =
+        err instanceof AxiosError && err.response?.data?.error
+          ? err.response.data.error
+          : 'Failed to send message. Please try again.';
       setError(errorMessage);
     } finally {
       setLoading(false);

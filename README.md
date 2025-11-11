@@ -66,6 +66,6 @@ Don't forget to give us access to the repository by either making it public or i
 ## Code Quality & Testing
 
 - [X] Write tests for the API endpoints
-- [ ] There should be no visible type errors
+- [X] There should be no visible type errors
 - [ ] The linter should not show errors
 - [ ] The linter should not show warnings
