@@ -34,3 +34,11 @@ coverage/
 
 # typescript
 *.tsbuildinfo
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~

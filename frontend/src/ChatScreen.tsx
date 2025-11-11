@@ -1,3 +1,4 @@
+import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import React, { useState } from 'react';
 import {
@@ -13,6 +14,13 @@ interface ChatMessage {
   role: 'user' | 'assistant';
   text: string;
 }
+
+const languages: { code: string; name: string }[] = [
+  { code: 'en', name: 'English' },
+  { code: 'it', name: 'Italian' },
+  { code: 'fr', name: 'French' },
+  { code: 'de', name: 'German' },
+];
 
 const ChatScreen: React.FC = () => {
   const [messageInput, setMessageInput] = useState<string>('');
@@ -35,6 +43,7 @@ const ChatScreen: React.FC = () => {
         'http://localhost:3000/api/chat',
         {
           userMessage: messageInput,
+          language: language,
         },
         {
           headers: { 'Content-Type': 'application/json' },
@@ -63,13 +72,20 @@ const ChatScreen: React.FC = () => {
       {/* Simple language selection */}
       <View style={styles.languageContainer}>
         <Text>Select language: </Text>
-        <TextInput
-          style={styles.languageInput}
-          value={language}
-          onChangeText={setLanguage}
-          placeholder="e.g., en, es, de"
-          autoCapitalize="none"
-        />
+        <Picker
+          selectedValue={language}
+          onValueChange={(value) => setLanguage(value)}
+          style={styles.languagePicker}
+          dropdownIconColor="#333"
+        >
+          {languages.map((lang) => (
+            <Picker.Item
+              key={lang.code}
+              label={`${lang.name} (${lang.code})`}
+              value={lang.code}
+            />
+          ))}
+        </Picker>
       </View>
 
       {/* Chat History */}
@@ -134,12 +150,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
-  languageInput: {
-    borderColor: '#ccc',
-    borderWidth: 1,
+  languagePicker: {
     marginLeft: 8,
-    paddingHorizontal: 8,
-    width: 80,
+    width: 180,
   },
   chatList: {
     flex: 1,

@@ -7,21 +7,23 @@ export async function sendUserMessage(
   res: Response,
   _next: NextFunction
 ) {
+
+  const language = req.body.language ? req.body.language : "en";
   // Save user message in the mock DB
   ChatDb.messages.push({
     role: "user",
     text: req.body.userMessage,
-    language: "en",
+    language: language,
   });
 
   // Get a response from OpenAI
-  const aiReply = await getAIResponse(req.body.userMessage);
+  const aiReply = await getAIResponse(req.body.userMessage, language);
 
   // Save AI message in mock DB
   ChatDb.messages.push({
     role: "assistant",
     text: aiReply,
-    language: "en",
+    language: language,
   });
 
   return res.status(200).json({ response: aiReply });

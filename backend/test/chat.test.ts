@@ -21,7 +21,7 @@ describe('POST /api/chat', () => {
 
     expect(response.body).toHaveProperty('response');
     expect(response.body.response).toBe(mockResponse);
-    expect(openaiService.getAIResponse).toHaveBeenCalledWith('Hello');
+    expect(openaiService.getAIResponse).toHaveBeenCalledWith('Hello', 'en');
   });
 
   it('should handle a missing message', async () => {

@@ -38,7 +38,7 @@ Don't forget to give us access to the repository by either making it public or i
 
 ## Full-stack
 
-- [ ] The frontend allows the user to specify a language but currently this is ignored. Support this feature.
+- [X] The frontend allows the user to specify a language but currently this is ignored. Support this feature.
 - [ ] Allow users to specify a language level (CEFR) in the frontend and prompt the LLM to respect this.
 - [ ] Add another API endpoint that corrects each user message after sending. Display the correction to the user in the frontend (can be very simple).
 
