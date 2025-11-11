@@ -1,5 +1,17 @@
 # Univerbal coding exercise
 
+## Additional Setup Required
+
+- Create a `.env` file in the backend dir with the following variables:
+```
+OPENAI_API_KEY=api_key
+PORT=3000
+```
+
+- Running Tests: You can run the tests inside the backend dir with `npm test`
+
+---
+
 Thank you for taking the time to complete this coding exercise. We hope you will enjoy it and wish you good luck! 😊
 
 Below you find instructions on how to set up the project and a list of tasks to work on.
