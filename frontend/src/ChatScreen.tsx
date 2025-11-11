@@ -14,6 +14,7 @@ import { SelectPicker } from './components/SelectPicker';
 interface ChatMessage {
   role: 'user' | 'assistant';
   text: string;
+  correction?: string;
 }
 
 const languages: { code: string; name: string }[] = [
@@ -63,27 +64,51 @@ const ChatScreen: React.FC = () => {
     setError('');
     setLoading(true);
 
-    // Add the user message to the conversation
-    setConversation((prev) => [...prev, { role: 'user', text: messageInput }]);
+    const currentMessage = messageInput;
 
     try {
-      const response = await axios.post(
-        'http://localhost:3000/api/chat',
+      // parallel call for both endpoints
+      const [chatResponse, correctionResponse] = await Promise.all([
+        axios.post(
+          'http://localhost:3000/api/chat',
+          {
+            userMessage: currentMessage,
+            language: language,
+            cefrLevel: cefrLevel,
+            model: model,
+          },
+          {
+            headers: { 'Content-Type': 'application/json' },
+          },
+        ),
+        axios.post(
+          'http://localhost:3000/api/correct',
+          {
+            userMessage: currentMessage,
+            language: language,
+          },
+          {
+            headers: { 'Content-Type': 'application/json' },
+          },
+        ),
+      ]);
+
+      const correction = correctionResponse.data.correction;
+      const hasError = correction && correction !== 'No corrections needed.';
+
+      setConversation((prev) => [
+        ...prev,
         {
-          userMessage: messageInput,
-          language: language,
-          cefrLevel: cefrLevel,
-          model: model,
+          role: 'user',
+          text: currentMessage,
+          correction: hasError ? correction : undefined,
         },
-        {
-          headers: { 'Content-Type': 'application/json' },
-        },
-      );
+      ]);
 
       // The backend should return something like { response: "<AI reply>" }
       setConversation((prev) => [
         ...prev,
-        { role: 'assistant', text: response.data.response || '(No response)' },
+        { role: 'assistant', text: chatResponse.data.response || '(No response)' },
       ]);
 
       setMessageInput('');
@@ -133,18 +158,30 @@ const ChatScreen: React.FC = () => {
         data={conversation}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => (
-          <View
-            style={[
-              styles.messageContainer,
-              item.role === 'user'
-                ? styles.userMessage
-                : styles.assistantMessage,
-            ]}
-          >
-            <Text style={styles.messageAuthor}>
-              {item.role === 'user' ? 'You' : 'AI'}
-            </Text>
-            <Text style={styles.messageText}>{item.text}</Text>
+          <View>
+            <View
+              style={[
+                styles.messageContainer,
+                item.role === 'user'
+                  ? item.correction
+                    ? styles.userMessageError
+                    : styles.userMessage
+                  : styles.assistantMessage,
+              ]}
+            >
+              <Text style={styles.messageAuthor}>
+                {item.role === 'user' ? 'You' : 'AI'}
+              </Text>
+              <Text style={styles.messageText}>{item.text}</Text>
+            </View>
+            {item.role === 'user' && !item.correction && (
+              <Text style={styles.correctionSuccess}>Perfect!</Text>
+            )}
+            {item.correction && (
+              <Text style={styles.correctionText}>
+                Correction: {item.correction}
+              </Text>
+            )}
           </View>
         )}
       />
@@ -208,9 +245,13 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     backgroundColor: '#e1ffc7',
   },
+  userMessageError: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#FCADD1',
+  },
   assistantMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#F0F0F0',
   },
   messageAuthor: {
     fontWeight: '700',
@@ -247,5 +288,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 14,
     fontWeight: '500',
+  },
+  correctionText: {
+    alignSelf: 'flex-end',
+    fontSize: 12,
+    color: '#A62828',
+    marginTop: 4,
+    marginRight: 8,
+    fontStyle: 'italic',
+  },
+  correctionSuccess: {
+    alignSelf: 'flex-end',
+    fontSize: 12,
+    color: '#2E7D32',
+    marginTop: 4,
+    marginRight: 8,
+    fontWeight: '600',
   },
 });

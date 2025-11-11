@@ -48,6 +48,7 @@ type AIConfig = {
   language?: string;
   cefrLevel?: string;
   conversationTopic?: string | null;
+  provideFeedback?: boolean;
 };
 
 export async function getAIResponse(config: AIConfig): Promise<string> {
@@ -59,6 +60,7 @@ export async function getAIResponse(config: AIConfig): Promise<string> {
     language = "en",
     cefrLevel = "B1",
     conversationTopic = null,
+    provideFeedback = false,
   } = config;
   try {
     let systemPrompt: string;
@@ -80,6 +82,10 @@ export async function getAIResponse(config: AIConfig): Promise<string> {
         systemPrompt += ` A user's first message indicates their preferred topic of interest. Ask them what specifically they'd like to discuss about this topic.`;
       } else if (conversationTopic) {
         systemPrompt += ` Keep the conversation focused on the topic: "${conversationTopic}" abd guide the discussion back if it strays.`;
+      }
+
+      if (provideFeedback) {
+        systemPrompt += `This is the user's 5th message. Please include the following in your response (always in ENGLISH): 1. A brief progress feedback on how they've been doing so far. 2. An interactive language learning exercise related to the conversation topic. This could be a multiple choice question, fill-in-the-blank, translation exercise. Make it engaging and relevant to what you've been discussing. Format your response like this: - First, continue the conversation naturally in ${languageName} - Then add: "📊 Progress Feedback (in English): [Your feedback here] - Interactive Exercise: [Your exercise here]"`;
       }
     }
 

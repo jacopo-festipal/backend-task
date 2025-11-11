@@ -19,7 +19,10 @@ export async function processUserMessage(
     language: language,
   });
 
+  ChatDb.userMessageCount++;
+
   const recentMessages = ChatDb.messages.slice(-4);
+  const shouldProvideFeedback = ChatDb.userMessageCount === 5;
 
   const aiReply = await getAIResponse({
     messages: recentMessages,
@@ -27,6 +30,7 @@ export async function processUserMessage(
     cefrLevel,
     conversationTopic: ChatDb.conversationTopic,
     model,
+    provideFeedback: shouldProvideFeedback,
   });
 
   ChatDb.messages.push({

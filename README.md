@@ -52,7 +52,7 @@ Don't forget to give us access to the repository by either making it public or i
 
 - [X] The frontend allows the user to specify a language but currently this is ignored. Support this feature.
 - [X] Allow users to specify a language level (CEFR) in the frontend and prompt the LLM to respect this.
-- [ ] Add another API endpoint that corrects each user message after sending. Display the correction to the user in the frontend (can be very simple).
+- [X] Add another API endpoint that corrects each user message after sending. Display the correction to the user in the frontend (can be very simple).
 
 ## API endpoints
 
@@ -72,8 +72,8 @@ Don't forget to give us access to the repository by either making it public or i
 
 - [X] In the current setup, each reply from the llm only takes one user message into account. Increase the context by also including the previous 2 messages (i.e. one reply and another user message).
 - [X] Ask users in a first message about what they want to talk about and then make sure that the rest of the conversation sticks to this topic.
-- [ ] After a user sent 5 messages, the next message from the AI should include feedback of how they have been doing so far (in English).
-- [ ] Make the conversation more interesting. (this is intended to be very open, be creative)
+- [X] After a user sent 5 messages, the next message from the AI should include feedback of how they have been doing so far (in English).
+- [X] Make the conversation more interesting. (this is intended to be very open, be creative)
 
 ## Code Quality & Testing
 

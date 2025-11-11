@@ -7,4 +7,5 @@ interface Message {
 export const ChatDb = {
   messages: [] as Message[],
   conversationTopic: null as string | null,
+  userMessageCount: 0,
 };

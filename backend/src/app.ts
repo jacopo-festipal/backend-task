@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import chatRouter from "./routes/chat.routes";
+import correctionRouter from "./routes/correction.routes";
 import errorHandler from "./middlewares/errorHandler";
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/chat", chatRouter);
+app.use("/api/correct", correctionRouter);
 
 // Fallback route (for unknown endpoints)
 app.use((_req, res) => {
